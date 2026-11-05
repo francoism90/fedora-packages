@@ -1,0 +1,55 @@
+name: COPR
+
+on:
+  push:
+    branches: [main]
+    paths: ['packages/**']
+  workflow_dispatch:
+    inputs:
+      package:
+        description: Package to build (empty builds all)
+        required: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: fedora:latest
+    steps:
+      - run: dnf install -y --setopt=install_weak_deps=False git copr-cli
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Select packages
+        id: select
+        env:
+          INPUT: ${{ inputs.package }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          git config --global --add safe.directory "$PWD"
+          if [ -n "$INPUT" ]; then
+            pkgs="$INPUT"
+          elif [ "$GITHUB_EVENT_NAME" = push ] && git cat-file -e "$BEFORE" 2>/dev/null; then
+            pkgs=$(git diff --name-only "$BEFORE" "$GITHUB_SHA" -- packages/ | cut -d/ -f2 | sort -u)
+          else
+            pkgs=$(ls packages)
+          fi
+          echo "packages=$(echo $pkgs)" >> "$GITHUB_OUTPUT"
+
+      - name: Submit builds
+        if: steps.select.outputs.packages != ''
+        env:
+          COPR_CONFIG: ${{ secrets.COPR_CONFIG }}
+          PACKAGES: ${{ steps.select.outputs.packages }}
+        run: |
+          mkdir -p ~/.config && printf '%s\n' "$COPR_CONFIG" > ~/.config/copr
+          for pkg in $PACKAGES; do
+            [ -d "packages/$pkg" ] || continue
+            copr-cli buildscm --nowait \
+              --clone-url "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY" \
+              --commit "$GITHUB_SHA" \
+              --spec "packages/$pkg/$pkg.spec" \
+              --method make_srpm \
+              francoism90/fedora-packages
+          done
