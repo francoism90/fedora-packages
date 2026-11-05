@@ -42,6 +42,7 @@ jobs:
         env:
           COPR_CONFIG: ${{ secrets.COPR_CONFIG }}
           PACKAGES: ${{ steps.select.outputs.packages }}
+          COPR_PROJECT: francoism/fedora-packages
         run: |
           mkdir -p ~/.config && printf '%s\n' "$COPR_CONFIG" > ~/.config/copr
           grep -q '^\[copr-cli\]' ~/.config/copr || { echo "::error::COPR_CONFIG secret is missing the [copr-cli] section"; exit 1; }
@@ -52,5 +53,5 @@ jobs:
               --commit "$GITHUB_SHA" \
               --spec "packages/$pkg/$pkg.spec" \
               --method make_srpm \
-              francoism90/fedora-packages
+              "$COPR_PROJECT"
           done

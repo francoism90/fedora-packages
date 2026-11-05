@@ -1,6 +1,8 @@
 # fedora-packages
 
-RPM specs for Fedora, built on COPR as `francoism90/fedora-packages`.
+RPM specs for Fedora, built on COPR as `francoism/fedora-packages`.
+
+The GitHub owner is `francoism90` but the COPR owner is `francoism`. Clone URLs use the GitHub owner, COPR project paths use the COPR owner.
 
 ## Layout
 

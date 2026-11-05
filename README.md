@@ -1,6 +1,6 @@
 # fedora-packages
 
-RPM specs for Fedora, built on [COPR](https://copr.fedorainfracloud.org/coprs/francoism90/fedora-packages/).
+RPM specs for Fedora, built on [COPR](https://copr.fedorainfracloud.org/coprs/francoism/fedora-packages/).
 
 | Package | Upstream |
 | --- | --- |
@@ -9,7 +9,7 @@ RPM specs for Fedora, built on [COPR](https://copr.fedorainfracloud.org/coprs/fr
 ## Install
 
 ```sh
-sudo dnf copr enable francoism90/fedora-packages
+sudo dnf copr enable francoism/fedora-packages
 sudo dnf install kora-icon-theme
 ```
 
