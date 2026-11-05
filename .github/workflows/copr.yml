@@ -17,7 +17,7 @@ jobs:
     steps:
       - run: dnf install -y --setopt=install_weak_deps=False git copr-cli
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -35,7 +35,7 @@ jobs:
           else
             pkgs=$(ls packages)
           fi
-          echo "packages=$(echo $pkgs)" >> "$GITHUB_OUTPUT"
+          echo "packages=$(echo "$pkgs" | xargs)" >> "$GITHUB_OUTPUT"
 
       - name: Submit builds
         if: steps.select.outputs.packages != ''
