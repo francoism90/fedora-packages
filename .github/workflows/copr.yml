@@ -44,6 +44,7 @@ jobs:
           PACKAGES: ${{ steps.select.outputs.packages }}
         run: |
           mkdir -p ~/.config && printf '%s\n' "$COPR_CONFIG" > ~/.config/copr
+          grep -q '^\[copr-cli\]' ~/.config/copr || { echo "::error::COPR_CONFIG secret is missing the [copr-cli] section"; exit 1; }
           for pkg in $PACKAGES; do
             [ -d "packages/$pkg" ] || continue
             copr-cli buildscm --nowait \
