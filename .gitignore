@@ -1,0 +1,11 @@
+# Sources are downloaded at build time
+*.tar.*
+*.tgz
+*.zip
+*.rpm
+*.log
+
+# Extracted sources or build trees next to a spec
+packages/*/*/
+results/
+tmp/
